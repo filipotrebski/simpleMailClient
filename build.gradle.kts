@@ -23,6 +23,7 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:28.2-jre")
+    implementation("com.beust:jcommander:1.78")
 
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")

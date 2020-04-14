@@ -3,12 +3,36 @@
  */
 package mail;
 
-public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
+import com.beust.jcommander.JCommander;
+import mail.args.Send;
+import mail.client.DummySendClient;
+import mail.client.Mail;
+import mail.client.SendClient;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class App {
+
+
+    public static void main(String[] args) throws Exception {
+        SendClient sendClient = new DummySendClient();
+        if (args[0].equals("send")) {
+            Send send = new Send();
+            var args1 = new String[args.length -1 ];
+            System.arraycopy(args,1,args1,0,args.length-1);
+            JCommander.newBuilder().addObject(send).build().parse(args1);
+            System.out.println("Enter mail body, send after empty line");
+            StringBuilder stringBuffer = new StringBuilder();
+            String line = null;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+            while ((line = bufferedReader.readLine()).length() != 0 ){
+                stringBuffer.append(line).append("\n");
+           }
+           var mailToSend =  new Mail("me@me.too", send.getRecipient(),send.getSubject(),stringBuffer.toString());
+            sendClient.send(mailToSend);
+        }
+
     }
 }
