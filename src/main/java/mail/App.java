@@ -4,35 +4,60 @@
 package mail;
 
 import com.beust.jcommander.JCommander;
-import mail.args.Send;
+import mail.args.ListCommand;
+import mail.args.MainCommand;
+import mail.args.SendCommand;
 import mail.client.DummySendClient;
 import mail.client.Mail;
 import mail.client.SendClient;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class App {
 
+    private final SendClient sendClient;
+
+    public App(SendClient sendClient) {
+        this.sendClient = sendClient;
+    }
 
     public static void main(String[] args) throws Exception {
         SendClient sendClient = new DummySendClient();
-        if (args[0].equals("send")) {
-            Send send = new Send();
-            var args1 = new String[args.length -1 ];
-            System.arraycopy(args,1,args1,0,args.length-1);
-            JCommander.newBuilder().addObject(send).build().parse(args1);
-            System.out.println("Enter mail body, send after empty line");
-            StringBuilder stringBuffer = new StringBuilder();
-            String line = null;
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-            while ((line = bufferedReader.readLine()).length() != 0 ){
-                stringBuffer.append(line).append("\n");
-           }
-           var mailToSend =  new Mail("me@me.too", send.getRecipient(),send.getSubject(),stringBuffer.toString());
-            sendClient.send(mailToSend);
-        }
+        var input = new BufferedReader(new InputStreamReader(System.in));
+        new App(sendClient).run(input, args);
+    }
 
+    public void run(BufferedReader input, String... args) throws Exception {
+        MainCommand mainCommand = new MainCommand();
+        JCommander jCommander = new JCommander(mainCommand);
+        jCommander.setProgramName("simpleMailClient");
+        SendCommand sendCommand = new SendCommand();
+        ListCommand listCommand = new ListCommand();
+        jCommander.addCommand("send", sendCommand);
+        jCommander.addCommand("list", listCommand);
+        jCommander.parse(args);
+
+        if (mainCommand.help) {
+            jCommander.usage();
+        } else if (jCommander.getParsedCommand() == null) {
+            jCommander.usage();
+        } else if (jCommander.getParsedCommand().equals("send")) {
+            send(sendCommand, sendClient, input);
+        } else if (jCommander.getParsedCommand().equals("list")) {
+            System.out.println("Listing");
+        } else {
+            jCommander.usage();
+        }
+    }
+
+    public void send(SendCommand sendCommand, SendClient sendClient, BufferedReader input) throws Exception {
+        StringBuilder stringBuffer = new StringBuilder();
+        String line = null;
+        while ((line = input.readLine()).length() != 0) {
+            stringBuffer.append(line).append("\n");
+        }
+        var mailToSend = new Mail("me@me.too", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString());
+        sendClient.send(mailToSend);
     }
 }
