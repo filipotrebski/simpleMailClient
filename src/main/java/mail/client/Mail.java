@@ -1,5 +1,7 @@
 package mail.client;
 
+import java.util.Objects;
+
 public class Mail {
     public  String from;
     public String to;
@@ -36,5 +38,21 @@ public class Mail {
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mail mail = (Mail) o;
+        return Objects.equals(from, mail.from) &&
+                Objects.equals(to, mail.to) &&
+                Objects.equals(subject, mail.subject) &&
+                Objects.equals(body, mail.body);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(from, to, subject, body);
     }
 }

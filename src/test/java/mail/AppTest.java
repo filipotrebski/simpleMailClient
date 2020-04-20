@@ -3,12 +3,31 @@
  */
 package mail;
 
+import mail.client.Mail;
+import mail.client.SendClient;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.mockito.Mockito;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+
+
+    @Test
+    public void sendByRun() throws Exception {
+        //given
+        SendClient sendClient = Mockito.mock(SendClient.class);
+        var app = new App(sendClient);
+        var input = new BufferedReader(new StringReader("message\nbody\n\n"));
+
+        //when
+        app.run(input, "send", "-to", "john@doe.com", "-s", "subject");
+
+        //then
+        var expected = new Mail("me@me.too","john@doe.com","subject","message\nbody\n");
+        Mockito.verify(sendClient).send(expected);
     }
+
+
 }
