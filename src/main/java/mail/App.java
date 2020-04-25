@@ -10,6 +10,7 @@ import mail.args.SendCommand;
 import mail.client.DummySendClient;
 import mail.client.Mail;
 import mail.client.SendClient;
+import mail.client.SmtpSendClient;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -23,7 +24,8 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        SendClient sendClient = new DummySendClient();
+     //   SendClient sendClient = new DummySendClient();
+        SendClient sendClient = new SmtpSendClient();
         var input = new BufferedReader(new InputStreamReader(System.in));
         new App(sendClient).run(input, args);
     }
@@ -52,6 +54,7 @@ public class App {
     }
 
     public void send(SendCommand sendCommand, SendClient sendClient, BufferedReader input) throws Exception {
+        System.out.println("Enter email body, end with empty line");
         StringBuilder stringBuffer = new StringBuilder();
         String line = null;
         while ((line = input.readLine()).length() != 0) {
