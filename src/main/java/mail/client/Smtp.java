@@ -20,7 +20,11 @@ public class Smtp {
     }
 
     public SmtpResponse sendMessage(String message) throws IOException {
-        return sendCommand("DATA\r\n" + message + "\r\n\r\n");
+        SmtpResponse data = sendCommand("DATA");
+        if (data.isSuccess()){
+            return sendCommand(message);
+        }
+        return data;
     }
 
     public SmtpResponse setSender(String sender) throws IOException {
@@ -38,7 +42,10 @@ public class Smtp {
     public SmtpResponse login(String user, String password) throws IOException {
         var authResponse = sendCommand("AUTH LOGIN");
         if (authResponse.getCode() < 400){
-            sendCommand(Base64.getEncoder().encodeToString(user.getBytes()));
+            var userResponse = sendCommand(Base64.getEncoder().encodeToString(user.getBytes()));
+            if (userResponse.getCode() >= 400){
+                return userResponse;
+            }
             var response = sendCommand(Base64.getEncoder().encodeToString(password.getBytes()));
             return response;
         } else {
@@ -61,7 +68,7 @@ public class Smtp {
         if (debug) {
             System.out.println("C: " + toSend.toString());
         }
-        output.write(toSend.toString().getBytes());
+        output.write(toSend.toString().trim().getBytes());
         output.write("\r\n".getBytes());
         output.flush();
         return readResponse(reader, debug);
@@ -77,11 +84,11 @@ public class Smtp {
             stringBuilder.append(line).append("\n");
             if (debug) {
                 System.out.println("S: " + line);
-                System.out.println("Matches to read next: " + line.matches("\\d{3}-.*"));
+//                System.out.println("Matches to read next: " + line.matches("\\d{3}-.*"));
             }
 
         } while (line.matches("\\d{3}-.*"));
-        System.out.println("S: Reading done\n");
+//        System.out.println("S: Reading done\n");
 
         var response = stringBuilder.toString().trim();
         var code = Integer.parseInt(response.substring(0, 3));

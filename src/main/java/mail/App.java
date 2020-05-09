@@ -71,7 +71,7 @@ public class App {
         while ((line = input.readLine()).length() != 0) {
             stringBuffer.append(line).append("\n");
         }
-        var mailToSend = new Mail("<smtpmail@onet.pl", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString());
+        var mailToSend = new Mail("smtpmail@onet.pl", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString().trim());
         sendClient.send(mailToSend);
     }
 }
