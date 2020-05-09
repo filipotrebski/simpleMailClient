@@ -23,9 +23,15 @@ public class SmtpTest extends TestCase {
 
     public void testReadResponseMultiLine() throws IOException {
         //given
-        String s = "250-smtp.server.com Hello client.example.com\n" +
-                "250-SIZE 1000000\n" +
-                "250 AUTH LOGIN PLAIN CRAM-MD5";
+        String s = "250-smtp.poczta.onet.pl\r\n" +
+                "250-PIPELINING\r\n" +
+                "250-SIZE 90000000\r\n" +
+                "250-ETRN\r\n" +
+                "250-STARTTLS\r\n" +
+                "250-AUTH PLAIN LOGIN XOAUTH2\r\n" +
+                "250-AUTH=PLAIN LOGIN XOAUTH2\r\n" +
+                "250-ENHANCEDSTATUSCODES\r\n" +
+                "250 8BITMIME";
         var input = new BufferedReader(new StringReader(s));
 
         //when

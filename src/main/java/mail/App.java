@@ -13,7 +13,10 @@ import mail.client.SendClient;
 import mail.client.SmtpSendClient;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 public class App {
 
@@ -24,8 +27,16 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-     //   SendClient sendClient = new DummySendClient();
-        SendClient sendClient = new SmtpSendClient();
+        //   SendClient sendClient = new DummySendClient();
+        Properties p = new Properties();
+        p.load(new FileInputStream(new File(System.getProperty("user.home")+"/.simplemail/","settings.properties")));
+
+        SendClient sendClient = new SmtpSendClient(
+                p.getProperty("smtp.host","localhost"),
+                Integer.parseInt(p.getProperty("smtp.port", "1025")),
+                p.getProperty("user","u"),
+                p.getProperty("password","p")
+        );
         var input = new BufferedReader(new InputStreamReader(System.in));
         new App(sendClient).run(input, args);
     }
@@ -60,7 +71,7 @@ public class App {
         while ((line = input.readLine()).length() != 0) {
             stringBuffer.append(line).append("\n");
         }
-        var mailToSend = new Mail("me@me.too", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString());
+        var mailToSend = new Mail("<smtpmail@onet.pl", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString());
         sendClient.send(mailToSend);
     }
 }
