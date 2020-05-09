@@ -22,6 +22,6 @@ public class SmtpResponse {
 
     public boolean isSuccess() {
         //https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes
-        return code >= 200 && code < 300;
+        return code >= 200 && code < 400;
     }
 }

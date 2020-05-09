@@ -23,6 +23,7 @@ public class SmtpSendClient implements SendClient {
         System.out.println("Connecting to " + host + " on port " + port);
         Socket socket = new Socket(host, port);
         Smtp smtp = new Smtp(socket.getInputStream(), socket.getOutputStream(), true);
+        smtp.readGreetings();
         smtp.ehlo(host);
         smtp.login(user, password);
         smtp.setSender(mail.getFrom());
@@ -32,7 +33,7 @@ public class SmtpSendClient implements SendClient {
                 "To: " + mail.getTo() + "\r\n" +
                 "Date: " + date + "\r\n" +
                 "Subject: " + mail.getSubject() + "\r\n" + "\r\n" +
-                mail.getBody() + "\r\n" +
+                mail.getBody() + "\r\n" + "\r\n" +
                 ".\r\n";
         smtp.sendMessage(mailText);
         smtp.logout(host);

@@ -15,13 +15,17 @@ public class Smtp {
         reader = new BufferedReader(new InputStreamReader(input));
     }
 
+    public void readGreetings() throws IOException {
+        readResponse(reader, debug);
+    }
+
     public void addRecipient(String recipient) throws IOException {
         sendCommand("RCPT", "TO:<" + recipient + ">");
     }
 
     public SmtpResponse sendMessage(String message) throws IOException {
         SmtpResponse data = sendCommand("DATA");
-        if (data.isSuccess()){
+        if (data.isSuccess()) {
             return sendCommand(message);
         }
         return data;
@@ -41,9 +45,9 @@ public class Smtp {
 
     public SmtpResponse login(String user, String password) throws IOException {
         var authResponse = sendCommand("AUTH LOGIN");
-        if (authResponse.getCode() < 400){
+        if (authResponse.isSuccess()) {
             var userResponse = sendCommand(Base64.getEncoder().encodeToString(user.getBytes()));
-            if (userResponse.getCode() >= 400){
+            if (!userResponse.isSuccess()) {
                 return userResponse;
             }
             var response = sendCommand(Base64.getEncoder().encodeToString(password.getBytes()));
