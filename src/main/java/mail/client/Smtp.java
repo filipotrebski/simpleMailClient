@@ -16,7 +16,7 @@ public class Smtp {
     }
 
     public void readGreetings() throws IOException {
-        readResponse(reader, debug);
+        ResponseReader.readResponse(reader, debug);
     }
 
     public void addRecipient(String recipient) throws IOException {
@@ -50,8 +50,7 @@ public class Smtp {
             if (!userResponse.isSuccess()) {
                 return userResponse;
             }
-            var response = sendCommand(Base64.getEncoder().encodeToString(password.getBytes()));
-            return response;
+            return sendCommand(Base64.getEncoder().encodeToString(password.getBytes()));
         } else {
             return authResponse;
         }
@@ -75,27 +74,7 @@ public class Smtp {
         output.write(toSend.toString().trim().getBytes());
         output.write("\r\n".getBytes());
         output.flush();
-        return readResponse(reader, debug);
+        return ResponseReader.readResponse(reader, debug);
     }
 
-    static SmtpResponse readResponse(BufferedReader reader, boolean debug) throws IOException {
-
-        String line;
-        var stringBuilder = new StringBuilder();
-        do {
-            //there is more lines
-            line = reader.readLine();
-            stringBuilder.append(line).append("\n");
-            if (debug) {
-                System.out.println("S: " + line);
-//                System.out.println("Matches to read next: " + line.matches("\\d{3}-.*"));
-            }
-
-        } while (line.matches("\\d{3}-.*"));
-//        System.out.println("S: Reading done\n");
-
-        var response = stringBuilder.toString().trim();
-        var code = Integer.parseInt(response.substring(0, 3));
-        return new SmtpResponse(code, response);
-    }
 }
