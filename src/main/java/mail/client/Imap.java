@@ -23,7 +23,7 @@ public class Imap {
 
     public ImapResponse listEmails(int start, int end) throws IOException {
 //        f fetch 1:10 (BODY[HEADER.FIELDS (To Subject Date)])
-        return sendCommand("f fetch " + start + ":" + end + " (BODY[HEADER.FIELDS (To Subject Date)]");
+        return sendCommand("f fetch " + start + ":" + end + " (BODY[HEADER.FIELDS (From Subject Date)]");
     }
 
     public ImapResponse sendCommand(String cmd) throws IOException {
