@@ -25,7 +25,7 @@ public class AppTest {
         app.run(input, "send", "-to", "john@doe.com", "-s", "subject");
 
         //then
-        var expected = new Mail("smtpmail@onet.pl","john@doe.com","subject","message\nbody\n");
+        var expected = new Mail("smtpmail@onet.pl","john@doe.com","subject","message\nbody");
         Mockito.verify(sendClient).send(expected);
     }
 
