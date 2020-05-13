@@ -27,17 +27,6 @@ public class ResponseReader {
     }
 
     public static ImapResponse readImapResponse(BufferedReader reader, boolean debug, String command) throws IOException {
-//g21 SELECT "INBOX"
-//* FLAGS (\Answered \Flagged \Deleted \Seen \Draft)
-//* OK [PERMANENTFLAGS (\Answered \Flagged \Deleted \Seen \Draft \*)] Flags permitted.
-//* 15 EXISTS
-//* 15 RECENT
-//* OK [UNSEEN 11] First unseen.
-//* OK [UIDVALIDITY 1588335587] UIDs valid
-//* OK [UIDNEXT 16] Predicted next UID
-//* OK [NOMODSEQ] No permanent modsequences
-//g21 OK [READ-WRITE] Select completed (0.000 + 0.000 secs).
-
         StringBuilder sb = new StringBuilder();
         while (true) {
             String line = reader.readLine();

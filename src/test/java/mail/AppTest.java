@@ -18,7 +18,7 @@ public class AppTest {
     public void sendByRun() throws Exception {
         //given
         SendClient sendClient = Mockito.mock(SendClient.class);
-        var app = new App(sendClient);
+        var app = new App(sendClient, imapClient);
         var input = new BufferedReader(new StringReader("message\nbody\n\n"));
 
         //when

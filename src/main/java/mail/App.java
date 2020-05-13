@@ -7,38 +7,43 @@ import com.beust.jcommander.JCommander;
 import mail.args.ListCommand;
 import mail.args.MainCommand;
 import mail.args.SendCommand;
-import mail.client.DummySendClient;
 import mail.client.Mail;
 import mail.client.SendClient;
 import mail.client.SmtpSendClient;
+import mail.client.imap.EmailHeader;
+import mail.client.imap.ImapClient;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Properties;
 
 public class App {
 
     private final SendClient sendClient;
+    private ImapClient imapClient;
 
-    public App(SendClient sendClient) {
+    public App(SendClient sendClient, ImapClient imapClient) {
         this.sendClient = sendClient;
+        this.imapClient = imapClient;
     }
 
     public static void main(String[] args) throws Exception {
         //   SendClient sendClient = new DummySendClient();
         Properties p = new Properties();
-        p.load(new FileInputStream(new File(System.getProperty("user.home")+"/.simplemail/","settings.properties")));
+        p.load(new FileInputStream(new File(System.getProperty("user.home") + "/.simplemail/", "settings.properties")));
 
         SendClient sendClient = new SmtpSendClient(
-                p.getProperty("smtp.host","localhost"),
+                p.getProperty("smtp.host", "localhost"),
                 Integer.parseInt(p.getProperty("smtp.port", "1025")),
-                p.getProperty("user","u"),
-                p.getProperty("password","p")
+                p.getProperty("user", "u"),
+                p.getProperty("password", "p")
         );
+        ImapClient imapClient = new ImapClient(p.getProperty("imap.host"), Integer.parseInt(p.getProperty("imap.port")), p.getProperty("user"), p.getProperty("password"));
         var input = new BufferedReader(new InputStreamReader(System.in));
-        new App(sendClient).run(input, args);
+        new App(sendClient, imapClient).run(input, args);
     }
 
     public void run(BufferedReader input, String... args) throws Exception {
@@ -59,10 +64,18 @@ public class App {
             send(sendCommand, sendClient, input);
         } else if (jCommander.getParsedCommand().equals("list")) {
             System.out.println("Listing");
+            list();
         } else {
             jCommander.usage();
         }
     }
+
+    public void list() throws Exception {
+        imapClient.selectFolder("INBOX");
+        List<EmailHeader> emailHeaders = imapClient.listHeaders();
+        emailHeaders.forEach(System.out::println);
+    }
+
 
     public void send(SendCommand sendCommand, SendClient sendClient, BufferedReader input) throws Exception {
         System.out.println("Enter email body, end with empty line");
