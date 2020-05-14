@@ -6,6 +6,7 @@ package mail;
 import com.beust.jcommander.JCommander;
 import mail.args.ListCommand;
 import mail.args.MainCommand;
+import mail.args.ReadCommand;
 import mail.args.SendCommand;
 import mail.client.Mail;
 import mail.client.SendClient;
@@ -13,11 +14,9 @@ import mail.client.SmtpSendClient;
 import mail.client.imap.EmailHeader;
 import mail.client.imap.FolderContent;
 import mail.client.imap.ImapClient;
+import mail.client.imap.ReceiveEmail;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.List;
 import java.util.Properties;
 
@@ -53,8 +52,10 @@ public class App {
         jCommander.setProgramName("simpleMailClient");
         SendCommand sendCommand = new SendCommand();
         ListCommand listCommand = new ListCommand();
+        ReadCommand readCommand = new ReadCommand();
         jCommander.addCommand("send", sendCommand);
         jCommander.addCommand("list", listCommand);
+        jCommander.addCommand("read", readCommand);
         jCommander.parse(args);
 
         if (mainCommand.help) {
@@ -66,9 +67,17 @@ public class App {
         } else if (jCommander.getParsedCommand().equals("list")) {
             System.out.println("Listing");
             list();
+        } else if(jCommander.getParsedCommand().equals("read")) {
+            read(readCommand.folder, readCommand.index);
         } else {
             jCommander.usage();
         }
+    }
+
+    private void read(String folder, int index) throws IOException {
+        imapClient.selectFolder(folder);
+        ReceiveEmail email = imapClient.getEmail(index);
+        System.out.println(email.getEmailBody());
     }
 
     public void list() throws Exception {

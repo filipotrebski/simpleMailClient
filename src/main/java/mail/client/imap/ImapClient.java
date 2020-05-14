@@ -43,7 +43,7 @@ public class ImapClient {
     }
 
     public ReceiveEmail getEmail(int number) throws IOException {
-        return new ReceiveEmail(imap.emailBody(2).getText());
+        return new ReceiveEmail(imap.emailBody(number).getText());
     }
 
 }
