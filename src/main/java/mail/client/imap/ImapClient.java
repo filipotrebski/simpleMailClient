@@ -30,16 +30,20 @@ public class ImapClient {
         imap.login(user,password);
     }
 
-    public void selectFolder(String  folder) throws IOException {
-        imap.selectFolder(folder);
+    public FolderContent selectFolder(String  folder) throws IOException {
+        ImapResponse imapResponse = imap.selectFolder(folder);
+        return new ImapParser().folder(imapResponse.getText());
     }
 
-    public List<EmailHeader> listHeaders() throws  Exception{
-        ImapResponse imapResponse = imap.listEmails(1, 19);
+    public List<EmailHeader> listHeaders(int from, int to) throws  Exception{
+        ImapResponse imapResponse = imap.listEmails(from, to);
         //TODO check error code
         List<EmailHeader> emailHeaders = new ImapParser().headerList(imapResponse.getText());
         return emailHeaders;
     }
 
+    public ReceiveEmail getEmail(int number) throws IOException {
+        return new ReceiveEmail(imap.emailBody(2).getText());
+    }
 
 }

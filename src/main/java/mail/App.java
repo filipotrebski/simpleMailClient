@@ -11,6 +11,7 @@ import mail.client.Mail;
 import mail.client.SendClient;
 import mail.client.SmtpSendClient;
 import mail.client.imap.EmailHeader;
+import mail.client.imap.FolderContent;
 import mail.client.imap.ImapClient;
 
 import java.io.BufferedReader;
@@ -71,8 +72,8 @@ public class App {
     }
 
     public void list() throws Exception {
-        imapClient.selectFolder("INBOX");
-        List<EmailHeader> emailHeaders = imapClient.listHeaders();
+        FolderContent folderContent = imapClient.selectFolder("INBOX");
+        List<EmailHeader> emailHeaders = imapClient.listHeaders(1, folderContent.getCount());
         emailHeaders.forEach(System.out::println);
     }
 

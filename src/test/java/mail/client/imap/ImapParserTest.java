@@ -78,5 +78,24 @@ public class ImapParserTest {
         assertEquals(expected2, emailHeaders.get(1));
     }
 
+    @Test
+    public void folderContent() {
+        //given
+
+        String input = "* FLAGS (\\Answered \\Flagged \\Deleted \\Seen \\Draft)\n" +
+                "* OK [PERMANENTFLAGS (\\Answered \\Flagged \\Deleted \\Seen \\Draft \\*)] Flags permitted.\n" +
+                "* 15 EXISTS\n" +
+                "* 15 RECENT\n" +
+                "* OK [UNSEEN 11] First unseen.\n" +
+                "* OK [UIDVALIDITY 1588335587] UIDs valid\n" +
+                "* OK [UIDNEXT 16] Predicted next UID\n" +
+                "* OK [NOMODSEQ] No permanent modsequences";
+        //when
+        var folder = parser.folder(input);
+
+        //then
+        assertEquals(15, folder.getCount());
+
+    }
 
 }

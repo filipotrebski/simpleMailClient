@@ -32,6 +32,10 @@ public class Imap {
         return sendCommand("f",  "fetch " + start + ":" + end + " (BODY[HEADER.FIELDS (From Subject Date)])");
     }
 
+    public ImapResponse emailBody(int number) throws IOException {
+        return sendCommand("f1", "FETCH", Integer.toString(number), "BODY[TEXT]");
+    }
+
     public ImapResponse sendCommand(String cmd, String... args) throws IOException {
         StringBuilder toSend = new StringBuilder();
 
@@ -48,4 +52,5 @@ public class Imap {
         output.flush();
         return ResponseReader.readImapResponse(reader, debug, cmd);
     }
+
 }

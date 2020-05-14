@@ -29,4 +29,14 @@ public class ImapParser {
         }
         return emailHeaders;
     }
+
+    public FolderContent folder(String response) {
+
+        var pattern = Pattern.compile(".* (\\d+) EXISTS.*");
+        Matcher matcher = pattern.matcher(response);
+        matcher.find();
+        int count = Integer.parseInt(matcher.group(1));
+        FolderContent folderContent = new FolderContent(count);
+        return folderContent;
+    }
 }
