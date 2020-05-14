@@ -5,6 +5,7 @@ package mail;
 
 import mail.client.Mail;
 import mail.client.SendClient;
+import mail.client.imap.ImapClient;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -18,6 +19,7 @@ public class AppTest {
     public void sendByRun() throws Exception {
         //given
         SendClient sendClient = Mockito.mock(SendClient.class);
+        ImapClient imapClient = Mockito.mock(ImapClient.class);
         var app = new App(sendClient, imapClient);
         var input = new BufferedReader(new StringReader("message\nbody\n\n"));
 
