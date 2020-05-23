@@ -12,13 +12,13 @@ public class Imap {
         this.debug = debug;
         reader = new BufferedReader(new InputStreamReader(input));
         String helloFromServer = reader.readLine();
-        if (debug){
+        if (debug) {
             System.out.println("S: " + helloFromServer);
         }
     }
 
     public ImapResponse login(String user, String password) throws IOException {
-        return sendCommand("A1",  "login",  user,  password);
+        return sendCommand("A1", "login", user, password);
     }
 
     public ImapResponse selectFolder(String folder) throws IOException {
@@ -29,7 +29,7 @@ public class Imap {
     public ImapResponse listEmails(int start, int end) throws IOException {
 //        f fetch 1:10 (BODY[HEADER.FIELDS (To Subject Date)])
         //f fetch 1:10 (BODY[HEADER.FIELDS (Subject)])
-        return sendCommand("f",  "fetch " + start + ":" + end + " (BODY[HEADER.FIELDS (From Subject Date)])");
+        return sendCommand("f", "fetch " + start + ":" + end + " (BODY[HEADER.FIELDS (From Subject Date)])");
     }
 
     public ImapResponse emailBody(int number) throws IOException {

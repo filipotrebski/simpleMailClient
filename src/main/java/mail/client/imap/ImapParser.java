@@ -14,8 +14,8 @@ public class ImapParser {
         ArrayList<EmailHeader> emailHeaders = new ArrayList<>();
         var pattern = Pattern.compile("(\\* \\d+ FETCH[^\\n]*?\\n(.*?)\\n\\))", Pattern.MULTILINE + Pattern.DOTALL);
         Matcher matcher = pattern.matcher(response);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z",Locale.ENGLISH);
-        while ((matcher.find())){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+        while ((matcher.find())) {
             String group = matcher.group(2);
             Properties properties = new Properties();
             properties.load(new StringReader(group));

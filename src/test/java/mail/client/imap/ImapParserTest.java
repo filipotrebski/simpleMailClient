@@ -28,7 +28,7 @@ public class ImapParserTest {
         //given
         var calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.set(2020, Calendar.MAY, 1, 12, 19, 47);
-        calendar.set(Calendar.MILLISECOND,0);
+        calendar.set(Calendar.MILLISECOND, 0);
         var date = calendar.getTime();
         var expected = new EmailHeader("ab@cd.pl", date, "Witamy");
         String response = "* 1 FETCH (BODY[HEADER.FIELDS (TO SUBJECT DATE)] {131}\n" +
@@ -51,7 +51,7 @@ public class ImapParserTest {
         //given
         var calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.set(2020, Calendar.MAY, 1, 12, 19, 47);
-        calendar.set(Calendar.MILLISECOND,0);
+        calendar.set(Calendar.MILLISECOND, 0);
         var date = calendar.getTime();
         var expected1 = new EmailHeader("ab1@cd.pl", date, "Witam");
         var expected2 = new EmailHeader("ab@cd.pl", date, "Witaj 2");

@@ -27,15 +27,15 @@ public class ImapClient {
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
         imap = new Imap(inputStream, outputStream, true);
-        imap.login(user,password);
+        imap.login(user, password);
     }
 
-    public FolderContent selectFolder(String  folder) throws IOException {
+    public FolderContent selectFolder(String folder) throws IOException {
         ImapResponse imapResponse = imap.selectFolder(folder);
         return new ImapParser().folder(imapResponse.getText());
     }
 
-    public List<EmailHeader> listHeaders(int from, int to) throws  Exception{
+    public List<EmailHeader> listHeaders(int from, int to) throws Exception {
         ImapResponse imapResponse = imap.listEmails(from, to);
         //TODO check error code
         List<EmailHeader> emailHeaders = new ImapParser().headerList(imapResponse.getText());

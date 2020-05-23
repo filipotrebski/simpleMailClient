@@ -67,7 +67,7 @@ public class App {
         } else if (jCommander.getParsedCommand().equals("list")) {
             System.out.println("Listing");
             list();
-        } else if(jCommander.getParsedCommand().equals("read")) {
+        } else if (jCommander.getParsedCommand().equals("read")) {
             read(readCommand.folder, readCommand.index);
         } else {
             jCommander.usage();
@@ -83,7 +83,10 @@ public class App {
     public void list() throws Exception {
         FolderContent folderContent = imapClient.selectFolder("INBOX");
         List<EmailHeader> emailHeaders = imapClient.listHeaders(1, folderContent.getCount());
-        emailHeaders.forEach(System.out::println);
+        for (int i = 0; i < emailHeaders.size(); i++) {
+            EmailHeader emailHeader = emailHeaders.get(i);
+            System.out.println((i + 1) + " " + emailHeader.getFrom() + " | " + emailHeader.getSubject());
+        }
     }
 
 

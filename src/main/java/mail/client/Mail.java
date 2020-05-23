@@ -3,7 +3,7 @@ package mail.client;
 import java.util.Objects;
 
 public class Mail {
-    public  String from;
+    public String from;
     public String to;
     public String subject;
     public String body;
@@ -14,6 +14,7 @@ public class Mail {
         this.subject = subject;
         this.body = body;
     }
+
     public String getFrom() {
         return from;
     }

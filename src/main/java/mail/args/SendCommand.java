@@ -8,7 +8,7 @@ public class SendCommand {
     @Parameter(names = {"-to"}, required = true)
     private String recipient;
 
-    @Parameter(names = {"-s", "-subject"},required = true)
+    @Parameter(names = {"-s", "-subject"}, required = true)
     private String subject;
 
     public String getRecipient() {
