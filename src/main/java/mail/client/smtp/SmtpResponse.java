@@ -1,4 +1,4 @@
-package mail.client;
+package mail.client.smtp;
 
 public class SmtpResponse {
 

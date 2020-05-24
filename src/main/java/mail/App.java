@@ -11,7 +11,7 @@ import mail.args.ReadCommand;
 import mail.args.SendCommand;
 import mail.client.Mail;
 import mail.client.SendClient;
-import mail.client.SmtpSendClient;
+import mail.client.smtp.SmtpSendClient;
 import mail.client.imap.EmailHeader;
 import mail.client.imap.FolderContent;
 import mail.client.imap.ImapClient;

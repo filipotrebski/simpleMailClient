@@ -1,4 +1,8 @@
-package mail.client;
+package mail.client.smtp;
+
+import mail.client.Mail;
+import mail.client.SendClient;
+import mail.client.smtp.Smtp;
 
 import java.net.Socket;
 import java.text.SimpleDateFormat;

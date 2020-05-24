@@ -1,4 +1,6 @@
-package mail.client;
+package mail.client.smtp;
+
+import mail.client.ResponseReader;
 
 import java.io.*;
 import java.util.Base64;
