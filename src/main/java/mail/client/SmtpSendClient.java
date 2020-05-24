@@ -27,7 +27,9 @@ public class SmtpSendClient implements SendClient {
         smtp.ehlo(host);
         smtp.login(user, password);
         smtp.setSender(mail.getFrom());
-        smtp.addRecipient(mail.getTo());
+        for (String s : mail.getTo()) {
+            smtp.addRecipient(s);
+        }
         var date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date());
         String mailText = "From: " + mail.getFrom() + "\r\n" +
                 "To: " + mail.getTo() + "\r\n" +

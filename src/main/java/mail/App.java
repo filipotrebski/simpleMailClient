@@ -4,6 +4,7 @@
 package mail;
 
 import com.beust.jcommander.JCommander;
+import com.google.common.base.Strings;
 import mail.args.ListCommand;
 import mail.args.MainCommand;
 import mail.args.ReadCommand;
@@ -94,10 +95,18 @@ public class App {
         System.out.println("Enter email body, end with empty line");
         StringBuilder stringBuffer = new StringBuilder();
         String line = null;
-        while ((line = input.readLine()).length() != 0) {
+        while (!Strings.isNullOrEmpty((line = input.readLine()))) {
             stringBuffer.append(line).append("\n");
         }
-        var mailToSend = new Mail("smtpmail@onet.pl", sendCommand.getRecipient(), sendCommand.getSubject(), stringBuffer.toString().trim());
+        var mailToSend = new Mail(
+                "smtpmail@onet.pl",
+                sendCommand.getRecipient(),
+                sendCommand.getCc(),
+                sendCommand.getBcc(),
+                sendCommand.getAttachments(),
+                sendCommand.getSubject(),
+                stringBuffer.toString().trim()
+        );
         sendClient.send(mailToSend);
     }
 }
