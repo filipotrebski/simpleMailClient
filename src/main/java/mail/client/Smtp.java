@@ -77,4 +77,11 @@ public class Smtp {
         return ResponseReader.readResponse(reader, debug);
     }
 
+    public void addCc(String recipient) throws IOException {
+        sendCommand("RCPT", "CC:<" + recipient + ">");
+    }
+
+    public void addBcc(String recipient) throws IOException {
+        sendCommand("RCPT", "BCC:<" + recipient + ">");
+    }
 }

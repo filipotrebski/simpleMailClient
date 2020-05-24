@@ -15,14 +15,18 @@ public class ImapClient {
     private int port;
     private String user;
     private String password;
-    private final Socket socket;
-    private final Imap imap;
+    private Socket socket;
+    private Imap imap;
 
     public ImapClient(String host, int port, String user, String password) throws IOException {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
+
+    }
+
+    public void connect() throws IOException {
         socket = new Socket(host, port);
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();

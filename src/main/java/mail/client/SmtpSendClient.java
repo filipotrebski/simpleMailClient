@@ -3,6 +3,7 @@ package mail.client;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class SmtpSendClient implements SendClient {
 
@@ -30,9 +31,22 @@ public class SmtpSendClient implements SendClient {
         for (String s : mail.getTo()) {
             smtp.addRecipient(s);
         }
+        for (String s : mail.getCc()) {
+            smtp.addCc(s);
+        }
+        for (String s : mail.getCc()) {
+            smtp.addBcc(s);
+        }
+
+        var toHeader = mail.getTo().stream().map(s -> "TO: <" + s + ">\r\n").collect(Collectors.joining());
+        var ccHeader = mail.getCc().stream().map(s -> "CC: <" + s + ">\r\n").collect(Collectors.joining());
+        var bccHeader = mail.getBcc().stream().map(s -> "BCC: <" + s + ">\r\n").collect(Collectors.joining());
+
         var date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date());
         String mailText = "From: " + mail.getFrom() + "\r\n" +
-                "To: " + mail.getTo() + "\r\n" +
+                toHeader +
+                ccHeader +
+                bccHeader +
                 "Date: " + date + "\r\n" +
                 "Subject: " + mail.getSubject() + "\r\n" + "\r\n" +
                 mail.getBody() + "\r\n" + "\r\n" +

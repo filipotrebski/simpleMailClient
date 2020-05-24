@@ -76,12 +76,14 @@ public class App {
     }
 
     private void read(String folder, int index) throws IOException {
+        imapClient.connect();
         imapClient.selectFolder(folder);
         ReceiveEmail email = imapClient.getEmail(index);
         System.out.println(email.getEmailBody());
     }
 
     public void list() throws Exception {
+        imapClient.connect();
         FolderContent folderContent = imapClient.selectFolder("INBOX");
         List<EmailHeader> emailHeaders = imapClient.listHeaders(1, folderContent.getCount());
         for (int i = 0; i < emailHeaders.size(); i++) {
