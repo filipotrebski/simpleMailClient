@@ -2,7 +2,6 @@ package mail.client.smtp;
 
 import mail.client.Mail;
 import mail.client.SendClient;
-import mail.client.smtp.Smtp;
 
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -41,20 +40,7 @@ public class SmtpSendClient implements SendClient {
         for (String s : mail.getCc()) {
             smtp.addBcc(s);
         }
-
-        var toHeader = mail.getTo().stream().map(s -> "TO: <" + s + ">\r\n").collect(Collectors.joining());
-        var ccHeader = mail.getCc().stream().map(s -> "CC: <" + s + ">\r\n").collect(Collectors.joining());
-        var bccHeader = mail.getBcc().stream().map(s -> "BCC: <" + s + ">\r\n").collect(Collectors.joining());
-
-        var date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(new Date());
-        String mailText = "From: " + mail.getFrom() + "\r\n" +
-                toHeader +
-                ccHeader +
-                bccHeader +
-                "Date: " + date + "\r\n" +
-                "Subject: " + mail.getSubject() + "\r\n" + "\r\n" +
-                mail.getBody() + "\r\n" + "\r\n" +
-                ".\r\n";
+        var mailText = DataWriter.write(mail);
         smtp.sendMessage(mailText);
         smtp.logout(host);
     }
