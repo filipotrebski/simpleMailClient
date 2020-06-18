@@ -68,7 +68,7 @@ public class ImapParser {
         }
 
         //Content-Type: multipart/alternative; boundary="===============6360767015533933081=="
-        if (headers.get("Content-Type").startsWith("multipart/alternative")) {
+        if (headers.get("Content-Type").startsWith("multipart/")) {
             var boundary = headers
                     .get("Content-Type")
                     .replaceAll(".* boundary=", "")
