@@ -3,6 +3,7 @@ package mail.client.imap;
 import mail.client.Imap;
 import mail.client.ImapResponse;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,19 +16,24 @@ public class ImapClient {
     private int port;
     private String user;
     private String password;
+    private boolean useSsl;
     private Socket socket;
     private Imap imap;
 
-    public ImapClient(String host, int port, String user, String password) throws IOException {
+    public ImapClient(String host, int port, String user, String password, boolean useSsl) throws IOException {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
-
+        this.useSsl = useSsl;
     }
 
     public void connect() throws IOException {
-        socket = new Socket(host, port);
+        if (useSsl) {
+            socket = SSLSocketFactory.getDefault().createSocket(host, port);
+        } else {
+            socket = new Socket(host, port);
+        }
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
         imap = new Imap(inputStream, outputStream, true);

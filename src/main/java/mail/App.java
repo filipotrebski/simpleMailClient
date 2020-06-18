@@ -42,7 +42,13 @@ public class App {
                 p.getProperty("user", "u"),
                 p.getProperty("password", "p")
         );
-        ImapClient imapClient = new ImapClient(p.getProperty("imap.host"), Integer.parseInt(p.getProperty("imap.port")), p.getProperty("user"), p.getProperty("password"));
+        ImapClient imapClient = new ImapClient(
+                p.getProperty("imap.host"),
+                Integer.parseInt(p.getProperty("imap.port")),
+                p.getProperty("user"),
+                p.getProperty("password"),
+                Boolean.parseBoolean(p.getProperty("imap.useSsl","false"))
+        );
         var input = new BufferedReader(new InputStreamReader(System.in));
         new App(sendClient, imapClient).run(input, args);
     }
