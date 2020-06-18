@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ImapParser {
 
@@ -31,12 +32,50 @@ public class ImapParser {
     }
 
     public FolderContent folder(String response) {
-
         var pattern = Pattern.compile(".* (\\d+) EXISTS.*");
         Matcher matcher = pattern.matcher(response);
         matcher.find();
         int count = Integer.parseInt(matcher.group(1));
-        FolderContent folderContent = new FolderContent(count);
-        return folderContent;
+        return new FolderContent(count);
+    }
+
+
+    public List<ReceivedEmailPart> extractEmailParts(String response, String boundary) {
+        var allParts = Arrays.asList(response.split("--" + boundary));
+        var parts = allParts.subList(1, allParts.size() - 1);
+        return parts
+                .stream()
+                .flatMap(s -> this.parseEmailPart(s).stream())
+                .collect(Collectors.toList());
+    }
+
+    public List<ReceivedEmailPart> parseEmailPart(String part) {
+        String[] split = part.replaceAll("\r", "").split("\n\n", 2);
+        var headersString = split[0];
+        var headers = headersString
+                .trim()
+                .lines()
+                .map(s -> s.split(": ", 2))
+                .collect(Collectors.toMap(s -> s[0], s -> s[1]));
+
+        var contentAsString = split[1];
+        var contentType = headers.get("Content-Type");
+        String contentTypeEncoding = headers.getOrDefault("Content-Transfer-Encoding", "");
+//        var body = contentAsString;
+        var content = contentAsString.getBytes();
+        if (contentTypeEncoding.equals("base64")) {
+            content = Base64.getMimeDecoder().decode(contentAsString);
+        }
+
+        //Content-Type: multipart/alternative; boundary="===============6360767015533933081=="
+        if (headers.get("Content-Type").startsWith("multipart/alternative")) {
+            var boundary = headers
+                    .get("Content-Type")
+                    .replaceAll(".* boundary=", "")
+                    .replaceAll("\"", "");
+            return extractEmailParts(contentAsString, boundary);
+        } else {
+            return Collections.singletonList(new ReceivedEmailPart(headers, content));
+        }
     }
 }

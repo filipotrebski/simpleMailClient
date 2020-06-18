@@ -1,0 +1,30 @@
+This is a multi-part message in MIME format.
+--===============4542122906753545732==
+Content-Type: multipart/alternative; boundary="===============6360767015533933081=="
+MIME-Version: 1.0
+
+--===============6360767015533933081==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Sprawdz zalacznik
+--
+X Y
+--===============6360767015533933081==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Sprawdz zalacznik<br /><br />--<br />X Y
+F
+--===============6360767015533933081==--
+
+--===============4542122906753545732==
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="plik.txt"
+
+YWxhIG1hIGtvdGEKYSBrb3QgbWEgYWxlCmFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh
+YWFhYWFhYWFhYWFhYWEK
+
+--===============4542122906753545732==--
+

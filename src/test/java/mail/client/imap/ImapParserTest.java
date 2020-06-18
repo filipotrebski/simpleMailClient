@@ -1,7 +1,10 @@
 package mail.client.imap;
 
+import com.google.common.io.Resources;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -97,5 +100,66 @@ public class ImapParserTest {
         assertEquals(15, folder.getCount());
 
     }
+
+
+    @Test
+    public void extractEmailParts() throws IOException {
+        //given
+        String input = Resources.toString(this.getClass().getClassLoader().getResource("multipart-email.txt"), Charset.defaultCharset());
+
+        //when
+        var receivedParts = parser.extractEmailParts(input, "===============4542122906753545732==");
+
+        //then
+
+        receivedParts.forEach(part -> {
+            var c = new String(part.getContent());
+            System.out.println(c);
+        });
+        assertEquals(3, receivedParts.size());
+        assertEquals("text/plain; charset=\"utf-8\"", receivedParts.get(0).getHeaders().get("Content-Type"));
+
+        var content0 = "Sprawdz zalacznik\n" +
+                "--\n" +
+                "X Y\n";
+        assertArrayEquals(content0.getBytes(), receivedParts.get(0).getContent());
+
+
+        assertEquals("text/html; charset=\"utf-8\"", receivedParts.get(1).getHeaders().get("Content-Type"));
+        var content1 = "Sprawdz zalacznik<br /><br />--<br />X Y\nF\n";
+        assertArrayEquals(content1.getBytes(), receivedParts.get(1).getContent());
+
+        assertEquals("text/plain", receivedParts.get(2).getHeaders().get("Content-Type"));
+        var content2 = "ala ma kota\n" +
+                "a kot ma ale\n" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
+        assertArrayEquals(content2.getBytes(), receivedParts.get(2).getContent());
+
+    }
+
+    @Test
+    public void parseEmailPart() {
+        //given
+        String input = "\n" +
+                "Content-Type: text/plain\n" +
+                "Content-Transfer-Encoding: base64\n" +
+                "Content-Disposition: attachment; filename=\"plik.txt\"\n" +
+                "\n" +
+                "YWxhIG1hIGtvdGEKYSBrb3QgbWEgYWxlCmFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh\n" +
+                "YWFhYWFhYWFhYWFhYWEK\n";
+
+        //when
+        var receivedEmailPart = parser.parseEmailPart(input).get(0);
+
+        //then
+        var content = "ala ma kota\n" +
+                "a kot ma ale\n" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
+        assertArrayEquals(content.getBytes(), receivedEmailPart.getContent());
+        assertEquals("text/plain", receivedEmailPart.getHeaders().get("Content-Type"));
+        assertEquals("base64", receivedEmailPart.getHeaders().get("Content-Transfer-Encoding"));
+        assertEquals("attachment; filename=\"plik.txt\"", receivedEmailPart.getHeaders().get("Content-Disposition"));
+    }
+
 
 }
